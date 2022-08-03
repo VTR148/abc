@@ -1,0 +1,98 @@
+import com.facebook.FacebookSdk;
+import com.facebook.appevents.AppEventsLogger;
+
+@Override
+public void onCreate() {
+    super.onCreate();
+    FacebookSdk.sdkInitialize(getApplicationContext());
+    AppEventsLogger.activateApp(this);
+}
+
+
+      
+logger.logPurchase(BigDecimal.valueOf(4.32), Currency.getInstance("USD"));
+
+
+<com.facebook.login.widget.LoginButton
+    android:id="@+id/login_button"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center_horizontal"
+    android:layout_marginTop="30dp"
+    android:layout_marginBottom="30dp" /> 
+
+callbackManager = CallbackManager.Factory.create();
+
+Nếu đang thêm nút này vào một Phân khúc, bạn cũng phải cập nhật hoạt động của mình thì mới 
+sử dụng được phân khúc đó. Bạn có thể tùy chỉnh các thuộc tính của Login button và đăng ký 
+lệnh gọi lại trong phương thức onCreate() hoặc onCreateView(). Những thuộc tính bạn có thể 
+tùy chỉnh bao gồm LoginBehavior, DefaultAudience, ToolTipPopup.Style và các quyền trên 
+LoginButton. Ví dụ:
+
+ private static final String EMAIL = "email";
+      
+    loginButton = (LoginButton) findViewById(R.id.login_button);
+    loginButton.setReadPermissions(Arrays.asList(EMAIL));
+    // If you are using in a fragment, call loginButton.setFragment(this);    
+
+    // Callback registration
+    loginButton.registerCallback(callbackManager, new FacebookCallback<LoginResult>() {
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            // App code
+        }
+
+        @Override
+        public void onCancel() {
+            // App code
+        }
+
+        @Override
+        public void onError(FacebookException exception) {
+            // App code
+        }
+    });
+
+
+Để phản hồi kết quả đăng nhập, bạn cần đăng ký lệnh gọi lại bằng LoginManager hoặc LoginButton. Nếu bạn đăng ký lệnh gọi lại bằng LoginButton thì không cần đăng ký lệnh gọi lại trên trình quản lý Đăng nhập.
+Bạn thêm lệnh gọi lại LoginManager vào hoạt động của mình hoặc phương thức onCreate() của phân khúc:
+
+callbackManager = CallbackManager.Factory.create();      
+      
+    LoginManager.getInstance().registerCallback(callbackManager,
+            new FacebookCallback<LoginResult>() {
+                @Override
+                public void onSuccess(LoginResult loginResult) {
+                    // App code
+                }
+
+                @Override
+                public void onCancel() {
+                     // App code
+                }
+
+                @Override
+                public void onError(FacebookException exception) {
+                     // App code   
+                }
+    });
+
+Nếu đăng nhập thành công, thông số LoginResult sẽ có AccessToken mới cũng như các quyền đã cấp hoặc từ chối gần đây nhất.
+Không nhất thiết phải có registerCallback để đăng nhập thành công, bạn có thể chọn theo dõi những thay đổi hiện tại về mã truy cập thông qua lớp AccessTokenTracker được mô tả bên dưới.
+Cuối cùng, trong phương thức onActivityResult, hãy gọi callbackManager.onActivityResult để chuyển kết quả đăng nhập vào LoginManager qua callbackManager.
+
+
+  @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        callbackManager.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
+    }Sao chép mã
+Mọi hoạt động và phân khúc mà bạn tích hợp với nút Đăng nhập hoặc Chia sẻ của FacebookSDK đều sẽ chuyển tiếp onActivityResult đến callbackManager.
+
+AccessToken accessToken = AccessToken.getCurrentAccessToken();
+boolean isLoggedIn = accessToken != null && !accessToken.isExpired();
+
+LoginManager.getInstance().logInWithReadPermissions(this, Arrays.asList("public_profile"));
+
+
+9f:c5:0b:8c:c6:c5:46:29:81:06:52:0f:8d:ea:fc:61:e6:b5:3e:30
